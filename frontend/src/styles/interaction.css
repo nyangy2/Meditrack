@@ -1,0 +1,382 @@
+/* 상호작용 확인 페이지 스타일 */
+.interaction-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  /* 검색 드롭다운을 위해 overflow 허용 */
+  overflow: visible;
+}
+
+.form-section {
+  background-color: #f8fafc;
+  border-radius: 8px;
+  padding: 16px;
+  /* 검색 드롭다운을 위해 overflow 허용 */
+  overflow: visible;
+}
+
+.form-section h4 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  font-size: 1rem;
+  color: #334155;
+}
+
+.current-medications {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.medication-tag {
+  display: flex;
+  align-items: center;
+  background-color: #e0f2fe;
+  border-radius: 16px;
+  padding: 6px 12px;
+  font-size: 0.875rem;
+  color: #0369a1;
+}
+
+.tag-remove {
+  background: none;
+  border: none;
+  color: #0369a1;
+  margin-left: 8px;
+  cursor: pointer;
+  padding: 0;
+  font-size: 0.75rem;
+}
+
+/* 검색 관련 스타일 */
+.search-container {
+  position: relative;
+  width: 100%;
+  /* 검색 결과가 표시될 수 있도록 overflow 허용 */
+  overflow: visible;
+}
+
+.search-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 0.875rem;
+}
+
+.search-spinner {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  border-top-color: #3b82f6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: translateY(-50%) rotate(360deg);
+  }
+}
+
+/* 검색 결과 드롭다운 스타일 */
+.search-results {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  max-height: 300px;
+  overflow-y: auto;
+  background-color: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  z-index: 10;
+  margin-top: 4px;
+}
+
+.search-results ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.search-results li {
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.search-results li:last-child {
+  border-bottom: none;
+}
+
+.search-results button {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  padding: 12px 16px;
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.search-results button:hover {
+  background-color: #f8fafc;
+}
+
+.search-results button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.medication-name {
+  font-weight: 500;
+  font-size: 0.9375rem;
+  color: #334155;
+  margin-bottom: 4px;
+}
+
+.medication-company {
+  font-size: 0.8125rem;
+  color: #64748b;
+}
+
+.selected-check-medication {
+  margin-top: 12px;
+}
+
+.form-actions {
+  margin-top: 8px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+/* 상호작용 결과 스타일 */
+.interaction-results {
+  margin-top: 24px;
+}
+
+.interaction-summary {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  background-color: #f8fafc;
+  border-radius: 8px;
+  margin-bottom: 24px;
+}
+
+.interaction-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 16px;
+  flex-shrink: 0;
+}
+
+.interaction-icon.warning {
+  background-color: #fef2f2;
+  color: #dc2626;
+}
+
+.interaction-icon.safe {
+  background-color: #f0fdf4;
+  color: #16a34a;
+}
+
+.interaction-icon i {
+  font-size: 1.5rem;
+}
+
+.interaction-text h4 {
+  margin: 0 0 4px 0;
+  font-size: 1.125rem;
+}
+
+.interaction-text p {
+  margin: 0;
+  font-size: 0.9375rem;
+  color: #475569;
+}
+
+.interaction-details {
+  margin-bottom: 24px;
+}
+
+.interaction-item {
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+
+.interaction-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background-color: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.interaction-header h5 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.interaction-level {
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.interaction-level.warning {
+  background-color: #fef2f2;
+  color: #dc2626;
+}
+
+.interaction-level.safe {
+  background-color: #f0fdf4;
+  color: #16a34a;
+}
+
+.interaction-content {
+  padding: 16px;
+}
+
+.interaction-content p {
+  margin: 0 0 8px 0;
+  font-size: 0.9375rem;
+  color: #475569;
+}
+
+.interaction-content p:last-child {
+  margin-bottom: 0;
+}
+
+.manufacturer {
+  font-size: 0.875rem;
+  color: #64748b;
+  margin-bottom: 8px;
+}
+
+.alternative-medications h4 {
+  margin-top: 0;
+  margin-bottom: 8px;
+}
+
+.alternative-medications > p {
+  margin-top: 0;
+  margin-bottom: 16px;
+  font-size: 0.9375rem;
+  color: #475569;
+}
+
+.alternative-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.alternative-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background-color: #f8fafc;
+  border-radius: 8px;
+}
+
+.alternative-info h5 {
+  margin: 0 0 4px 0;
+  font-size: 1rem;
+}
+
+.alternative-info p {
+  margin: 0 0 4px 0;
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
+.alternative-info p:last-child {
+  margin-bottom: 0;
+}
+
+.no-data {
+  color: #64748b;
+  font-size: 0.9375rem;
+  font-style: italic;
+}
+
+/* 대체 약품 추가 버튼 스타일 */
+.add-btn {
+  padding: 6px 12px;
+  font-size: 0.875rem;
+  border-radius: 6px;
+  background-color: #0284c7;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.add-btn:hover {
+  background-color: #0369a1;
+}
+
+.add-btn:disabled {
+  background-color: #94a3b8;
+  cursor: not-allowed;
+}
+
+.alternative-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background-color: #f8fafc;
+  border-radius: 8px;
+}
+
+.alternative-info {
+  flex: 1;
+}
+
+/* 카드 스타일에서 검색이 포함된 경우 overflow 허용 */
+.card {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  /* overflow: hidden; 제거하거나 조건부 적용 */
+}
+
+.card-body {
+  padding: 20px;
+  /* 검색 관련 컨텐츠가 있는 경우 overflow 허용 */
+  overflow: visible;
+}
+
+/* 검색 결과 드롭다운이 카드 경계를 넘어서 표시되도록 */
+.card:has(.search-container) {
+  overflow: visible;
+}
+
+.card:has(.interaction-form) {
+  overflow: visible;
+}
+
+.card:has(.interaction-form) .card-body {
+  overflow: visible;
+}

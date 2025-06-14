@@ -1,0 +1,45 @@
+/* 로그아웃 버튼 스타일 추가 */
+.logout-link {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 12px 20px;
+  background: none;
+  border: none;
+  color: #64748b;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  font-size: 0.9375rem;
+  text-align: left;
+}
+
+.logout-link:hover {
+  background-color: #f8fafc;
+  color: #dc2626;
+  padding-left: 24px;
+}
+
+.logout-link i {
+  margin-right: 12px;
+  width: 16px;
+  text-align: center;
+}
+
+/* 기존 사이드바 네비게이션 스타일과 일치하도록 */
+.sidebar-nav ul li:last-child {
+  border-top: 1px solid #e2e8f0;
+  margin-top: 8px;
+  padding-top: 8px;
+}
+
+/* 로그아웃 버튼에 호버 시 빨간색 강조 */
+.logout-link:hover {
+  background-color: #fef2f2;
+  color: #dc2626;
+}
+
+.logout-link:active {
+  background-color: #fee2e2;
+  transform: translateX(2px);
+}

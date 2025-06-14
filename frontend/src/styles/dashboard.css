@@ -1,0 +1,480 @@
+/* 대시보드 스타일 */
+.content-body {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  /* 검색 드롭다운을 위해 overflow 허용 */
+  overflow: visible;
+}
+
+/* 요약 카드 스타일 */
+.summary-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 16px;
+  margin-bottom: 8px;
+}
+
+.summary-card {
+  background-color: white;
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.summary-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.summary-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: #e0f2fe;
+  color: #0284c7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 16px;
+}
+
+.summary-content {
+  flex: 1;
+}
+
+.summary-content h4 {
+  margin: 0 0 4px 0;
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
+.summary-value {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #334155;
+}
+
+/* 통일된 요약 카드 액션 버튼 스타일 */
+.summary-action-btn {
+  background-color: #0284c7;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 70px;
+  font-family: inherit;
+}
+
+.summary-action-btn:hover {
+  background-color: #0369a1;
+  text-decoration: none;
+  transform: translateY(-1px);
+}
+
+.summary-action-btn:active {
+  background-color: #075985;
+  transform: translateY(0);
+}
+
+/* 카드 스타일 */
+.card {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  /* 기본적으로는 overflow 제어하되, 검색이 있는 경우 예외 처리 */
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.card-header h3 {
+  margin: 0;
+  font-size: 1.125rem;
+  color: #334155;
+}
+
+.card-link {
+  color: #0284c7;
+  font-size: 0.875rem;
+  text-decoration: none;
+}
+
+.card-link:hover {
+  text-decoration: underline;
+}
+
+.card-body {
+  padding: 20px;
+  /* 검색 관련 컨텐츠를 위해 overflow 허용 */
+  overflow: visible;
+}
+
+/* 검색 관련 요소가 있는 카드는 overflow 허용 */
+.card:has(.search-container),
+.card:has(.medication-search),
+.card:has(.interaction-form) {
+  overflow: visible;
+}
+
+.card:has(.search-container) .card-body,
+.card:has(.medication-search) .card-body,
+.card:has(.interaction-form) .card-body {
+  overflow: visible;
+}
+
+/* 기저질환 스타일 */
+.disease-categories {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.add-condition-btn {
+  align-self: flex-start;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #0284c7;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.add-condition-btn:hover {
+  background-color: #0369a1;
+}
+
+.condition-list {
+  background-color: #f8fafc;
+  border-radius: 8px;
+  padding: 16px;
+  /* 기저질환 목록은 overflow 제어 유지 */
+}
+
+.condition-list h4 {
+  margin-top: 0;
+  margin-bottom: 12px;
+  font-size: 1rem;
+}
+
+.condition-list ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 8px;
+}
+
+.condition-list button {
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.condition-list button:hover:not(:disabled) {
+  background-color: #e0f2fe;
+}
+
+.condition-list button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.selected-diseases {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.medication-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background-color: #f8fafc;
+  border-radius: 8px;
+  transition: background-color 0.2s;
+}
+
+.medication-card:hover {
+  background-color: #f1f5f9;
+}
+
+.medication-info {
+  flex: 1;
+}
+
+.medication-info h4 {
+  margin: 0 0 4px 0;
+  font-size: 1rem;
+}
+
+.medication-company {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
+.medication-actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* 간단한 약물 목록 스타일 */
+.simple-medication-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.simple-medication-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  background-color: #f8fafc;
+  border-radius: 8px;
+  border-left: 4px solid #0284c7;
+  transition: background-color 0.2s;
+}
+
+.simple-medication-item:hover {
+  background-color: #f1f5f9;
+}
+
+.simple-medication-item .medication-info h4 {
+  margin: 0 0 4px 0;
+  font-size: 1rem;
+  color: #334155;
+}
+
+.simple-medication-item .manufacturer {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
+/* 복용 알림 스타일 */
+.reminders-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.reminder-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background-color: #f8fafc;
+  border-radius: 8px;
+  border-left: 4px solid #0284c7;
+}
+
+.reminder-item.completed {
+  opacity: 0.7;
+  border-left-color: #16a34a;
+}
+
+.reminder-info h4 {
+  margin: 0 0 4px 0;
+  font-size: 1rem;
+}
+
+.reminder-info p {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
+.completed-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  background-color: #f0fdf4;
+  color: #16a34a;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+/* 경고 카드 스타일 */
+.warning-card {
+  border-left: 4px solid #f87171;
+}
+
+.warning-item {
+  display: flex;
+  align-items: flex-start;
+  padding: 12px 16px;
+  background-color: #fef2f2;
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+.warning-item:last-child {
+  margin-bottom: 0;
+}
+
+.warning-icon {
+  color: #dc2626;
+  margin-right: 12px;
+  margin-top: 2px;
+}
+
+.warning-content h4 {
+  margin: 0 0 4px 0;
+  font-size: 1rem;
+  color: #b91c1c;
+}
+
+.warning-content p {
+  margin: 0 0 4px 0;
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
+.warning-content p:last-child {
+  margin-bottom: 0;
+}
+
+.manufacturer-info {
+  font-size: 0.75rem !important;
+  color: #9ca3af !important;
+  margin-top: 4px !important;
+}
+
+/* 상호작용 확인 중 스타일 */
+.checking-interactions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background-color: #f8fafc;
+  border-radius: 8px;
+  color: #64748b;
+}
+
+.checking-interactions p {
+  margin: 0;
+  font-size: 0.875rem;
+}
+
+/* 로딩 상태 스타일 */
+.loading-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 32px;
+  color: #64748b;
+}
+
+.loading-state p {
+  margin: 0;
+  font-size: 0.875rem;
+}
+
+/* 버튼 스타일 */
+.btn {
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.text-btn {
+  background: none;
+  color: #0284c7;
+  padding: 6px 12px;
+}
+
+.text-btn:hover {
+  text-decoration: underline;
+}
+
+.primary-btn {
+  background-color: #0284c7;
+  color: white;
+  padding: 8px 16px;
+}
+
+.primary-btn:hover {
+  background-color: #0369a1;
+}
+
+.small-btn {
+  padding: 4px 8px;
+  font-size: 0.875rem;
+}
+
+.loading-spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s linear infinite;
+  margin-right: 8px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.no-data {
+  color: #64748b;
+  font-style: italic;
+  margin: 16px 0;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .medication-detail {
+    flex-direction: column;
+  }
+
+  .medication-detail-image {
+    width: 100%;
+    height: auto;
+    max-height: 250px;
+  }
+
+  .medication-detail-card {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .medication-image {
+    margin-right: 0;
+    margin-bottom: 12px;
+    align-self: center;
+  }
+}

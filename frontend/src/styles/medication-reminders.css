@@ -1,0 +1,470 @@
+/* 복용 알림 페이지 스타일 */
+.content-body {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* 진행률 카드 */
+.progress-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+}
+
+.progress-card .card-header {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.progress-card .card-header h3 {
+  color: white;
+  margin: 0;
+}
+
+.progress-stats {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.progress-text {
+  font-size: 0.875rem;
+  opacity: 0.9;
+}
+
+/* 메인 진행률 */
+.main-progress {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.progress-circle {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: conic-gradient(
+    #10b981 0deg,
+    #10b981 var(--progress, 0deg),
+    rgba(255, 255, 255, 0.2) var(--progress, 0deg)
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.progress-circle::before {
+  content: "";
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: inherit;
+  position: absolute;
+}
+
+.progress-value {
+  font-size: 1.25rem;
+  font-weight: 600;
+  z-index: 1;
+}
+
+.progress-bar-container {
+  flex: 1;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #10b981, #34d399);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.progress-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.875rem;
+  opacity: 0.9;
+}
+
+/* 시간대별 진행률 */
+.time-slot-progress {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.time-slot-item {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.time-slot-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.time-slot-label {
+  font-weight: 500;
+  flex: 1;
+}
+
+.time-slot-time {
+  font-size: 0.875rem;
+  opacity: 0.8;
+}
+
+.mini-progress {
+  width: 100%;
+  height: 4px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.mini-progress-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+.completion-rate {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+/* 통계 카드 */
+.stats-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.stat-card {
+  background-color: white;
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.stat-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: #f0f9ff;
+  color: #0284c7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 16px;
+}
+
+.stat-content h4 {
+  margin: 0 0 4px 0;
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
+.stat-value {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #334155;
+}
+
+/* 복용약 알림 목록 */
+.medication-reminders-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.medication-reminder-card {
+  background-color: #f8fafc;
+  border-radius: 8px;
+  padding: 16px;
+  border: 1px solid #e2e8f0;
+}
+
+.medication-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.medication-info h4 {
+  margin: 0 0 4px 0;
+  font-size: 1rem;
+  color: #334155;
+}
+
+.medication-company {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
+.medication-progress {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.progress-fraction {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #0284c7;
+  background-color: #e0f2fe;
+  padding: 4px 8px;
+  border-radius: 4px;
+  min-width: 40px;
+  text-align: center;
+}
+
+.mini-medication-progress {
+  width: 60px;
+  height: 6px;
+  background-color: #e2e8f0;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.mini-medication-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #0284c7, #0ea5e9);
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+/* 시간대 슬롯 */
+.time-slots {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.time-slot-button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background-color: white;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.time-slot-button:hover {
+  background-color: #f8fafc;
+  transform: translateY(-1px);
+}
+
+.time-slot-button.completed {
+  background-color: #f0fdf4;
+  border-color: #16a34a;
+}
+
+.time-slot-button.pending {
+  background-color: white;
+}
+
+.time-slot-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.slot-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.slot-info {
+  flex: 1;
+  text-align: left;
+}
+
+.slot-label {
+  display: block;
+  font-weight: 500;
+  font-size: 0.875rem;
+  color: #334155;
+}
+
+.slot-time {
+  display: block;
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.slot-status {
+  display: flex;
+  align-items: center;
+}
+
+.check-icon.completed {
+  color: #16a34a;
+}
+
+.check-icon.pending {
+  color: #94a3b8;
+}
+
+/* 복용 팁 카드 */
+.tips-card {
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  border: 1px solid #bae6fd;
+}
+
+.tips-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 16px;
+}
+
+.tip-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.tip-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.tip-content h4 {
+  margin: 0 0 4px 0;
+  font-size: 0.875rem;
+  color: #334155;
+}
+
+.tip-content p {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: #64748b;
+  line-height: 1.4;
+}
+
+/* 로딩 및 빈 상태 */
+.loading-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 32px;
+  color: #64748b;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 32px;
+}
+
+.no-data {
+  color: #64748b;
+  font-style: italic;
+  margin: 0 0 16px 0;
+}
+
+/* 버튼 스타일 */
+.btn {
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.primary-btn {
+  background-color: #0284c7;
+  color: white;
+  padding: 8px 16px;
+}
+
+.primary-btn:hover {
+  background-color: #0369a1;
+}
+
+.card-link {
+  color: #0284c7;
+  font-size: 0.875rem;
+  text-decoration: none;
+}
+
+.card-link:hover {
+  text-decoration: underline;
+}
+
+.loading-spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  border-top-color: #0284c7;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .main-progress {
+    flex-direction: column;
+    text-align: center;
+    gap: 16px;
+  }
+
+  .time-slot-progress {
+    grid-template-columns: 1fr;
+  }
+
+  .stats-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .time-slots {
+    grid-template-columns: 1fr;
+  }
+
+  .tips-list {
+    grid-template-columns: 1fr;
+  }
+}

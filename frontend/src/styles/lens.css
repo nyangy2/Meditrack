@@ -1,0 +1,651 @@
+/* 약품 검색 페이지 스타일 */
+.search-container {
+  width: 100%;
+  position: relative;
+  /* 검색 결과가 표시될 수 있도록 overflow 허용 */
+  overflow: visible;
+}
+
+/* 검색 입력 래퍼 스타일 개선 */
+.search-input-wrapper {
+  display: flex;
+  width: 100%;
+  margin-bottom: 8px;
+  position: relative;
+}
+
+.search-input {
+  flex: 1;
+  padding: 12px 16px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px 0 0 8px;
+  font-size: 0.9375rem;
+  outline: none;
+}
+
+.search-input:focus {
+  border-color: #0284c7;
+  box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.2);
+}
+
+.search-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 20px;
+  background-color: #0284c7;
+  color: white;
+  border: none;
+  border-radius: 0 8px 8px 0;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  min-width: 100px;
+}
+
+.search-button:hover:not(:disabled) {
+  background-color: #0369a1;
+}
+
+.search-button:disabled {
+  background-color: #94a3b8;
+  cursor: not-allowed;
+}
+
+.search-button .loading-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s linear infinite;
+}
+
+.search-options {
+  display: flex;
+  gap: 16px;
+  margin-top: 8px;
+}
+
+.search-option {
+  font-size: 0.875rem;
+  color: #64748b;
+  cursor: pointer;
+  padding-bottom: 4px;
+  border-bottom: 2px solid transparent;
+}
+
+.search-option.active {
+  color: #0284c7;
+  border-bottom-color: #0284c7;
+  font-weight: 500;
+}
+
+/* 스캔 관련 스타일 */
+.scan-body {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  /* 스캔 영역은 overflow 제어 유지 */
+}
+
+@media (min-width: 768px) {
+  .scan-body {
+    flex-direction: row;
+  }
+}
+
+.scan-preview {
+  width: 100%;
+  height: 250px;
+  border: 2px dashed #e2e8f0;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background-color: #f8fafc;
+  cursor: pointer;
+  outline: none; /* 포커스 시 기본 아웃라인 제거 */
+}
+
+.scan-preview:focus {
+  border-color: #0284c7;
+  box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.2);
+}
+
+@media (min-width: 768px) {
+  .scan-preview {
+    width: 300px;
+    height: 300px;
+  }
+}
+
+.preview-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.empty-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #94a3b8;
+  text-align: center;
+  padding: 16px;
+}
+
+.empty-preview p {
+  margin-top: 12px;
+  font-size: 0.875rem;
+}
+
+.paste-hint {
+  font-size: 0.75rem !important;
+  color: #64748b;
+  margin-top: 4px !important;
+}
+
+.scan-instruction {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.scan-instruction p {
+  margin-top: 0;
+  margin-bottom: 16px;
+  color: #475569;
+}
+
+.scan-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.scan-btn {
+  margin-top: 12px;
+  width: 100%;
+}
+
+.scan-error {
+  color: #dc2626;
+  font-size: 0.875rem;
+  margin-top: 8px;
+}
+
+/* 검색 결과 스타일 */
+.search-results {
+  margin-top: 24px;
+}
+
+.result-count {
+  font-size: 0.875rem;
+  color: #64748b;
+  font-weight: normal;
+}
+
+.medication-item {
+  display: flex;
+  padding: 16px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.medication-item:last-child {
+  border-bottom: none;
+}
+
+.medication-image {
+  width: 80px;
+  height: 80px;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-right: 16px;
+}
+
+.medication-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.medication-info {
+  flex: 1;
+}
+
+.medication-info h4 {
+  margin: 0 0 4px 0;
+  font-size: 1rem;
+}
+
+.manufacturer {
+  font-size: 0.875rem;
+  color: #64748b;
+  margin: 0 0 8px 0;
+}
+
+.efficacy {
+  font-size: 0.875rem;
+  color: #475569;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.medication-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  justify-content: center;
+}
+
+.small-btn {
+  padding: 6px 12px;
+  font-size: 0.875rem;
+}
+
+/* 스캔된 약품 정보 스타일 */
+.scanned-results {
+  margin-top: 24px;
+}
+
+.scanned-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.scanned-item:last-child {
+  border-bottom: none;
+}
+
+.scanned-tags {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.tag {
+  display: inline-block;
+  padding: 4px 8px;
+  font-size: 0.75rem;
+  border-radius: 4px;
+  background-color: #f1f5f9;
+  color: #475569;
+}
+
+.tag.safe {
+  background-color: #f0fdf4;
+  color: #16a34a;
+}
+
+.tag.warning {
+  background-color: #fef2f2;
+  color: #dc2626;
+}
+
+.scanned-actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* 모달 스타일 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-container {
+  width: 90%;
+  max-width: 800px;
+  max-height: 90vh;
+  background-color: white;
+  border-radius: 8px;
+  overflow: hidden; /* 모달은 overflow 유지 */
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #64748b;
+}
+
+.modal-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 16px 24px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.medication-detail {
+  display: flex;
+  gap: 24px;
+}
+
+.medication-detail-image {
+  width: 200px;
+  height: 200px;
+  border-radius: 8px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.medication-detail-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.medication-detail-info {
+  flex: 1;
+}
+
+.detail-section {
+  margin-bottom: 16px;
+}
+
+.detail-section h4 {
+  margin: 0 0 8px 0;
+  font-size: 1rem;
+  color: #334155;
+}
+
+.detail-section p {
+  margin: 0;
+  font-size: 0.9375rem;
+  color: #475569;
+  line-height: 1.6;
+  white-space: pre-line;
+}
+
+/* 버튼 스타일 */
+.outline-btn {
+  background-color: transparent;
+  border: 1px solid #0284c7;
+  color: #0284c7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.outline-btn:hover {
+  background-color: #f0f9ff;
+}
+
+.text-btn {
+  background: none;
+  border: none;
+  color: #0284c7;
+  padding: 6px 12px;
+  cursor: pointer;
+  font-size: 0.875rem;
+}
+
+.text-btn:hover {
+  text-decoration: underline;
+}
+
+.primary-btn {
+  background-color: #0284c7;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.primary-btn:hover {
+  background-color: #0369a1;
+}
+
+.primary-btn:disabled {
+  background-color: #94a3b8;
+  cursor: not-allowed;
+}
+
+/* 토스트 알림 스타일 */
+.toast-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 10001;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 400px;
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-left: 4px solid;
+  animation: slideInRight 0.3s ease-out;
+  min-width: 300px;
+}
+
+.toast-success {
+  border-left-color: #16a34a;
+}
+
+.toast-error {
+  border-left-color: #dc2626;
+}
+
+.toast-info {
+  border-left-color: #0284c7;
+}
+
+.toast-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.toast-success .toast-icon {
+  color: #16a34a;
+}
+
+.toast-error .toast-icon {
+  color: #dc2626;
+}
+
+.toast-info .toast-icon {
+  color: #0284c7;
+}
+
+.toast-message {
+  flex: 1;
+  font-size: 0.875rem;
+  color: #374151;
+  line-height: 1.4;
+}
+
+.toast-close {
+  background: none;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s;
+}
+
+.toast-close:hover {
+  color: #6b7280;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .medication-detail {
+    flex-direction: column;
+  }
+
+  .medication-detail-image {
+    width: 100%;
+    height: auto;
+    max-height: 250px;
+  }
+
+  .toast-container {
+    top: 10px;
+    right: 10px;
+    left: 10px;
+    max-width: none;
+  }
+
+  .toast {
+    min-width: auto;
+  }
+}
+
+/* 카드 스타일 수정 */
+.card {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  /* 검색이 포함된 카드는 overflow 허용 */
+}
+
+.card-body {
+  padding: 20px;
+  /* 검색 관련 컨텐츠를 위해 overflow 허용 */
+  overflow: visible;
+}
+
+/* 검색이 포함된 카드만 특별히 처리 */
+.card:has(.search-container) {
+  overflow: visible;
+}
+
+.card:has(.search-container) .card-body {
+  overflow: visible;
+}
+
+/* 자동완성 검색 결과 스타일 추가 */
+.search-autocomplete {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  max-height: 250px;
+  overflow-y: auto;
+  background-color: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  z-index: 10;
+  margin-top: 4px;
+}
+
+.search-autocomplete ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.search-autocomplete li {
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.search-autocomplete li:last-child {
+  border-bottom: none;
+}
+
+.search-autocomplete button {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  padding: 12px 16px;
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.search-autocomplete button:hover {
+  background-color: #f8fafc;
+}
+
+.search-autocomplete .medication-name {
+  font-weight: 500;
+  font-size: 0.9375rem;
+  color: #334155;
+  margin-bottom: 4px;
+}
+
+.search-autocomplete .medication-company {
+  font-size: 0.8125rem;
+  color: #64748b;
+}
+
+.autocomplete-more {
+  padding: 8px 16px;
+  font-size: 0.875rem;
+  color: #64748b;
+  text-align: center;
+  background-color: #f8fafc;
+  border-top: 1px solid #e2e8f0;
+}
