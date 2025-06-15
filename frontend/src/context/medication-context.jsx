@@ -24,6 +24,66 @@ export function MedicationProvider({ children }) {
   const [isLoading, setIsLoading] = useState(false) // 로딩 상태
   const [interactionMedication, setInteractionMedication] = useState(null) // 상호작용 확인용 약품
 
+  // 상호작용 레벨별 설정
+  const getInteractionLevelInfo = (level) => {
+    const levelMap = {
+      "안전": {
+        severity: "safe",
+        color: "#16a34a",
+        bgColor: "#f0fdf4",
+        icon: "fa-check-circle",
+        priority: 1,
+        message: "안전하게 함께 복용 가능합니다."
+      },
+      "주의": {
+        severity: "warning", 
+        color: "#f59e0b",
+        bgColor: "#fffbeb",
+        icon: "fa-exclamation-triangle",
+        priority: 2,
+        message: "주의하여 복용하세요. 의사나 약사와 상담을 권장합니다."
+      },
+      "중복성분": {
+        severity: "duplicate",
+        color: "#eab308", 
+        bgColor: "#fefce8",
+        icon: "fa-copy",
+        priority: 3,
+        message: "동일 성분이 중복됩니다. 과다 복용 위험이 있으니 주의하세요."
+      },
+      "병용금기": {
+        severity: "contraindicated",
+        color: "#dc2626",
+        bgColor: "#fef2f2", 
+        icon: "fa-ban",
+        priority: 4,
+        message: "함께 복용하면 안 됩니다. 즉시 의사와 상담하세요."
+      }
+    }
+    
+    return levelMap[level] || levelMap["안전"]
+  }
+
+  // 로컬 스토리지에서 복용 상태 불러오기
+  const loadMedicationSchedules = () => {
+    try {
+      const saved = localStorage.getItem("medicationSchedules")
+      return saved ? JSON.parse(saved) : {}
+    } catch (error) {
+      console.error("복용 상태 불러오기 실패:", error)
+      return {}
+    }
+  }
+
+  // 로컬 스토리지에 복용 상태 저장하기
+  const saveMedicationSchedules = (schedules) => {
+    try {
+      localStorage.setItem("medicationSchedules", JSON.stringify(schedules))
+    } catch (error) {
+      console.error("복용 상태 저장 실패:", error)
+    }
+  }
+
   // 컴포넌트가 마운트될 때 토큰 설정 및 복용약 가져오기
   useEffect(() => {
     // localStorage에서 토큰 가져와서 API 인스턴스에 설정
@@ -74,23 +134,47 @@ export function MedicationProvider({ children }) {
           })
         }
 
-        // 백엔드에서 받은 데이터가 morning, afternoon, evening 필드를 포함하는지 확인
+        // 로컬 스토리지에서 복용 상태 불러오기
+        const savedSchedules = loadMedicationSchedules()
+
+        // 백엔드에서 받은 데이터와 로컬 상태 병합
         const medicationsWithSchedule = res.data.map((medication) => {
-          // 시간대 필드가 없거나 undefined인 경우 기본값 false 설정
+          const medicationId = medication.item_seq
+          const savedSchedule = savedSchedules[medicationId] || {}
+
+          // 백엔드에서 온 값이 있으면 사용, 없으면 로컬 저장값 사용, 그것도 없으면 false
           const processedMedication = {
             ...medication,
-            morning: medication.morning !== undefined ? Boolean(medication.morning) : false,
-            afternoon: medication.afternoon !== undefined ? Boolean(medication.afternoon) : false,
-            evening: medication.evening !== undefined ? Boolean(medication.evening) : false,
+            morning:
+              medication.morning !== undefined
+                ? Boolean(medication.morning)
+                : savedSchedule.morning !== undefined
+                  ? savedSchedule.morning
+                  : false,
+            afternoon:
+              medication.afternoon !== undefined
+                ? Boolean(medication.afternoon)
+                : savedSchedule.afternoon !== undefined
+                  ? savedSchedule.afternoon
+                  : false,
+            evening:
+              medication.evening !== undefined
+                ? Boolean(medication.evening)
+                : savedSchedule.evening !== undefined
+                  ? savedSchedule.evening
+                  : false,
           }
 
           console.log(`처리된 약물 ${processedMedication.item_name}:`, {
             original_morning: medication.morning,
-            processed_morning: processedMedication.morning,
+            saved_morning: savedSchedule.morning,
+            final_morning: processedMedication.morning,
             original_afternoon: medication.afternoon,
-            processed_afternoon: processedMedication.afternoon,
+            saved_afternoon: savedSchedule.afternoon,
+            final_afternoon: processedMedication.afternoon,
             original_evening: medication.evening,
-            processed_evening: processedMedication.evening,
+            saved_evening: savedSchedule.evening,
+            final_evening: processedMedication.evening,
           })
 
           return processedMedication
@@ -180,6 +264,11 @@ export function MedicationProvider({ children }) {
       .delete(`/user_health/drugs/${itemId}`)
       .then(() => {
         setMedications((prev) => prev.filter((med) => med.item_seq !== itemId))
+
+        // 로컬 스토리지에서도 해당 약물의 복용 상태 제거
+        const savedSchedules = loadMedicationSchedules()
+        delete savedSchedules[itemId]
+        saveMedicationSchedules(savedSchedules)
       })
       .catch((err) => {
         console.error("복용약 삭제 실패:", err.response ? err.response.data : err)
@@ -204,6 +293,7 @@ export function MedicationProvider({ children }) {
 
     console.log("전송할 데이터:", updateData)
 
+    // 백엔드 API 호출
     api
       .patch(`/user_health/drugs/${medicationId}`, updateData)
       .then((response) => {
@@ -220,6 +310,15 @@ export function MedicationProvider({ children }) {
             return med
           }),
         )
+
+        // 로컬 스토리지에도 저장
+        const savedSchedules = loadMedicationSchedules()
+        if (!savedSchedules[medicationId]) {
+          savedSchedules[medicationId] = {}
+        }
+        savedSchedules[medicationId][timeSlot] = status
+        saveMedicationSchedules(savedSchedules)
+
         console.log(`약품 ${medicationId}의 ${timeSlot} 상태가 ${status}로 업데이트됨`)
       })
       .catch((err) => {
@@ -300,27 +399,48 @@ export function MedicationProvider({ children }) {
       const data = await response.json()
       console.log("API 응답 데이터:", data)
 
-      // 응답 구조에 맞게 UI 데이터 구성
-      const hasWarning = data.interactions.some((interaction) => interaction.interaction_type === "주의")
+      // 상호작용 레벨별 우선순위 확인
+      const interactions = data.interactions || []
+      const hasHighRiskInteraction = interactions.some(interaction => 
+        ["병용금기", "중복성분", "주의"].includes(interaction.level)
+      )
+
+      // 가장 높은 위험도 레벨 찾기
+      const highestRiskLevel = interactions.reduce((highest, interaction) => {
+        const currentInfo = getInteractionLevelInfo(interaction.level)
+        const highestInfo = getInteractionLevelInfo(highest)
+        return currentInfo.priority > highestInfo.priority ? interaction.level : highest
+      }, "안전")
+
+      const highestRiskInfo = getInteractionLevelInfo(highestRiskLevel)
 
       setIsLoading(false)
       return {
         summary: {
-          hasWarning,
-          message: hasWarning
-            ? `${interactionMedication.item_name}과(와) 현재 복용 중인 약품 사이에 잠재적인 상호작용이 있습니다.`
+          hasWarning: hasHighRiskInteraction,
+          level: highestRiskLevel,
+          message: hasHighRiskInteraction
+            ? `${interactionMedication.item_name}과(와) 현재 복용 중인 약품 사이에 ${highestRiskLevel} 수준의 상호작용이 있습니다.`
             : "모든 약품이 안전하게 함께 복용 가능합니다.",
+          color: highestRiskInfo.color,
+          bgColor: highestRiskInfo.bgColor,
+          icon: highestRiskInfo.icon
         },
-        interactions: data.interactions.map((interaction) => ({
-          medication1: interactionMedication.item_name,
-          medication2: interaction.product_a,
-          manufacturer: interaction.manufacturer_a,
-          level: interaction.interaction_type === "주의" ? "warning" : "safe",
-          description: interaction.detail,
-          recommendation:
-            interaction.interaction_type === "주의" ? "의사나 약사와 상담하세요." : "일반적인 용법용량을 따르세요.",
-        })),
-        alternatives: data.alternative_drugs || [],
+        interactions: interactions.map((interaction) => {
+          const levelInfo = getInteractionLevelInfo(interaction.level)
+          return {
+            medication1: interactionMedication.item_name,
+            medication2: interaction.with,
+            level: interaction.level,
+            severity: levelInfo.severity,
+            description: interaction.description,
+            recommendation: levelInfo.message,
+            color: levelInfo.color,
+            bgColor: levelInfo.bgColor,
+            icon: levelInfo.icon
+          }
+        }),
+        alternatives: data.alternative_ingredients || [],
       }
     } catch (error) {
       console.error("상호작용 확인 실패:", error)
@@ -348,6 +468,7 @@ export function MedicationProvider({ children }) {
     setInteractionDrug,
     clearInteractionDrug,
     checkInteractions,
+    getInteractionLevelInfo,
   }
 
   return <MedicationContext.Provider value={value}>{children}</MedicationContext.Provider>

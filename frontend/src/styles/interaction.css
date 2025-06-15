@@ -3,7 +3,6 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
-  /* 검색 드롭다운을 위해 overflow 허용 */
   overflow: visible;
 }
 
@@ -11,7 +10,6 @@
   background-color: #f8fafc;
   border-radius: 8px;
   padding: 16px;
-  /* 검색 드롭다운을 위해 overflow 허용 */
   overflow: visible;
 }
 
@@ -49,11 +47,9 @@
   font-size: 0.75rem;
 }
 
-/* 검색 관련 스타일 */
 .search-container {
   position: relative;
   width: 100%;
-  /* 검색 결과가 표시될 수 있도록 overflow 허용 */
   overflow: visible;
 }
 
@@ -84,7 +80,6 @@
   }
 }
 
-/* 검색 결과 드롭다운 스타일 */
 .search-results {
   position: absolute;
   top: 100%;
@@ -160,7 +155,6 @@
   width: 100%;
 }
 
-/* 상호작용 결과 스타일 */
 .interaction-results {
   margin-top: 24px;
 }
@@ -169,9 +163,9 @@
   display: flex;
   align-items: center;
   padding: 16px;
-  background-color: #f8fafc;
   border-radius: 8px;
   margin-bottom: 24px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .interaction-icon {
@@ -183,16 +177,7 @@
   justify-content: center;
   margin-right: 16px;
   flex-shrink: 0;
-}
-
-.interaction-icon.warning {
-  background-color: #fef2f2;
-  color: #dc2626;
-}
-
-.interaction-icon.safe {
-  background-color: #f0fdf4;
-  color: #16a34a;
+  background-color: rgba(255, 255, 255, 0.8);
 }
 
 .interaction-icon i {
@@ -202,6 +187,7 @@
 .interaction-text h4 {
   margin: 0 0 4px 0;
   font-size: 1.125rem;
+  font-weight: 600;
 }
 
 .interaction-text p {
@@ -237,19 +223,34 @@
 
 .interaction-level {
   font-size: 0.75rem;
-  font-weight: 500;
+  font-weight: 600;
   padding: 4px 8px;
   border-radius: 4px;
-}
-
-.interaction-level.warning {
-  background-color: #fef2f2;
-  color: #dc2626;
+  border: 1px solid currentColor;
 }
 
 .interaction-level.safe {
   background-color: #f0fdf4;
   color: #16a34a;
+  border-color: #16a34a;
+}
+
+.interaction-level.warning {
+  background-color: #fffbeb;
+  color: #f59e0b;
+  border-color: #f59e0b;
+}
+
+.interaction-level.duplicate {
+  background-color: #fefce8;
+  color: #eab308;
+  border-color: #eab308;
+}
+
+.interaction-level.contraindicated {
+  background-color: #fef2f2;
+  color: #dc2626;
+  border-color: #dc2626;
 }
 
 .interaction-content {
@@ -266,117 +267,407 @@
   margin-bottom: 0;
 }
 
-.manufacturer {
-  font-size: 0.875rem;
-  color: #64748b;
-  margin-bottom: 8px;
+/* 대체 약품 관련 스타일 개선 */
+.alternative-medications {
+  margin-top: 32px;
+  padding: 0;
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  border-radius: 16px;
+  border: 1px solid #0ea5e9;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+}
+
+.alternative-medications-header {
+  padding: 24px 24px 16px 24px;
+  background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+  color: white;
+  position: relative;
+}
+
+.alternative-medications-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="50" cy="10" r="0.5" fill="rgba(255,255,255,0.05)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+  opacity: 0.3;
 }
 
 .alternative-medications h4 {
-  margin-top: 0;
-  margin-bottom: 8px;
+  margin: 0 0 8px 0;
+  font-size: 1.375rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  position: relative;
+  z-index: 1;
+}
+
+.alternative-medications h4::before {
+  content: '💊';
+  font-size: 1.5rem;
 }
 
 .alternative-medications > p {
-  margin-top: 0;
-  margin-bottom: 16px;
-  font-size: 0.9375rem;
-  color: #475569;
+  margin: 0;
+  font-size: 1rem;
+  opacity: 0.95;
+  position: relative;
+  z-index: 1;
 }
 
 .alternative-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+  padding: 24px;
+  display: grid;
+  gap: 20px;
 }
 
 .alternative-item {
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.alternative-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  border-color: #0ea5e9;
+}
+
+.alternative-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #0ea5e9, #06b6d4, #0891b2);
+}
+
+.alternative-item-content {
+  padding: 20px;
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding: 12px 16px;
-  background-color: #f8fafc;
-  border-radius: 8px;
-}
-
-.alternative-info h5 {
-  margin: 0 0 4px 0;
-  font-size: 1rem;
-}
-
-.alternative-info p {
-  margin: 0 0 4px 0;
-  font-size: 0.875rem;
-  color: #64748b;
-}
-
-.alternative-info p:last-child {
-  margin-bottom: 0;
-}
-
-.no-data {
-  color: #64748b;
-  font-size: 0.9375rem;
-  font-style: italic;
-}
-
-/* 대체 약품 추가 버튼 스타일 */
-.add-btn {
-  padding: 6px 12px;
-  font-size: 0.875rem;
-  border-radius: 6px;
-  background-color: #0284c7;
-  color: white;
-  border: none;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.add-btn:hover {
-  background-color: #0369a1;
-}
-
-.add-btn:disabled {
-  background-color: #94a3b8;
-  cursor: not-allowed;
-}
-
-.alternative-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 16px;
-  background-color: #f8fafc;
-  border-radius: 8px;
+  align-items: flex-start;
+  gap: 20px;
 }
 
 .alternative-info {
   flex: 1;
 }
 
-/* 카드 스타일에서 검색이 포함된 경우 overflow 허용 */
+.alternative-info h5 {
+  margin: 0 0 12px 0;
+  font-size: 1.125rem;
+  color: #1e293b;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.alternative-details {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.alternative-detail-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
+.alternative-detail-icon {
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f1f5f9;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  color: #475569;
+}
+
+.alternative-detail-label {
+  font-weight: 500;
+  min-width: 60px;
+}
+
+.alternative-detail-value {
+  color: #334155;
+}
+
+.medication-code-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.75rem;
+  color: #64748b;
+  margin-top: 8px;
+}
+
+.alternative-actions {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-end;
+}
+
+.alternative-status {
+  font-size: 0.75rem;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-weight: 500;
+  text-align: center;
+  min-width: 80px;
+}
+
+.alternative-status.available {
+  background: #dcfce7;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+}
+
+.alternative-status.added {
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fde68a;
+}
+
+/* 버튼 스타일 개선 */
+.add-btn {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(16, 185, 129, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.add-btn::before {
+  content: '+';
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.add-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+}
+
+.add-btn:active {
+  transform: translateY(0);
+}
+
+.disabled-btn {
+  background: #f1f5f9;
+  color: #94a3b8;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: not-allowed;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.disabled-btn::before {
+  content: '✓';
+  font-size: 0.875rem;
+}
+
+/* 대체 약품이 없는 경우 스타일 개선 */
+.no-alternatives {
+  margin-top: 32px;
+  padding: 40px 24px;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border-radius: 16px;
+  border: 2px dashed #cbd5e1;
+  text-align: center;
+  position: relative;
+}
+
+.no-alternatives::before {
+  content: '🔍';
+  font-size: 3rem;
+  display: block;
+  margin-bottom: 16px;
+  opacity: 0.6;
+}
+
+.no-alternatives h4 {
+  margin: 0 0 8px 0;
+  color: #475569;
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.no-alternatives p {
+  margin: 0;
+  color: #64748b;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+.btn {
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding: 8px 16px;
+}
+
+.primary-btn {
+  background-color: #0284c7;
+  color: white;
+  padding: 12px 24px;
+}
+
+.primary-btn:hover:not(:disabled) {
+  background-color: #0369a1;
+  transform: translateY(-1px);
+}
+
+.primary-btn:disabled {
+  background-color: #94a3b8;
+  cursor: not-allowed;
+  transform: none;
+}
+
 .card {
   background-color: white;
   border-radius: 8px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  /* overflow: hidden; 제거하거나 조건부 적용 */
+  overflow: visible;
 }
 
 .card-body {
   padding: 20px;
-  /* 검색 관련 컨텐츠가 있는 경우 overflow 허용 */
   overflow: visible;
 }
 
-/* 검색 결과 드롭다운이 카드 경계를 넘어서 표시되도록 */
-.card:has(.search-container) {
-  overflow: visible;
+.card-header {
+  padding: 20px 20px 0 20px;
 }
 
-.card:has(.interaction-form) {
-  overflow: visible;
+.card-header h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: #334155;
 }
 
-.card:has(.interaction-form) .card-body {
-  overflow: visible;
+.info-text {
+  color: #64748b;
+  font-size: 0.9375rem;
+  margin-bottom: 24px;
+  line-height: 1.5;
+}
+
+/* 반응형 디자인 개선 */
+@media (max-width: 768px) {
+  .interaction-summary {
+    flex-direction: column;
+    text-align: center;
+    gap: 12px;
+  }
+
+  .interaction-icon {
+    margin-right: 0;
+    margin-bottom: 8px;
+  }
+
+  .interaction-header {
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+  }
+
+  .alternative-item {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .alternative-medications-header {
+    padding: 20px 16px 12px 16px;
+  }
+  
+  .alternative-medications h4 {
+    font-size: 1.25rem;
+  }
+  
+  .alternative-list {
+    padding: 16px;
+    gap: 16px;
+  }
+  
+  .alternative-item-content {
+    flex-direction: column;
+    gap: 16px;
+    padding: 16px;
+  }
+  
+  .alternative-actions {
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .add-btn, .disabled-btn {
+    flex: 1;
+    justify-content: center;
+  }
+  
+  .no-alternatives {
+    padding: 32px 16px;
+  }
+
+  .alternative-info {
+    margin-right: 0;
+    margin-bottom: 12px;
+  }
+
+  .alternative-actions {
+    width: 100%;
+  }
+
+  .alternative-actions .btn {
+    width: 100%;
+  }
+}
+
+@media (min-width: 1024px) {
+  .alternative-list {
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  }
 }

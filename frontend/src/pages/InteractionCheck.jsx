@@ -1,8 +1,4 @@
-"use client"
-
 import { useEffect, useState, useRef } from "react"
-import "../styles/styles.css"
-import "../styles/interaction.css" // 스타일 파일 추가
 import { useMedication } from "../context/medication-context"
 
 function InteractionCheck() {
@@ -18,8 +14,8 @@ function InteractionCheck() {
     setShowSearchResults,
     setInteractionDrug,
     clearInteractionDrug,
-    checkInteractions,
     addMedication,
+    getInteractionLevelInfo,
   } = useMedication()
 
   const [interactionResults, setInteractionResults] = useState(null)
@@ -59,13 +55,6 @@ function InteractionCheck() {
     setSearchKeyword("")
   }
 
-  // 약품 제거 처리
-  const handleRemoveMedication = (medicationId) => {
-    if (interactionMedication && interactionMedication.item_seq === medicationId) {
-      clearInteractionDrug()
-    }
-  }
-
   // 상호작용 확인 처리
   const handleCheckInteraction = async () => {
     if (!interactionMedication || medications.length === 0) {
@@ -76,20 +65,18 @@ function InteractionCheck() {
     setIsCheckingInteraction(true)
 
     try {
-      // localStorage에서 토큰 가져오기
       const token = localStorage.getItem("token")
 
       if (!token) {
         throw new Error("인증 토큰이 없습니다. 다시 로그인해주세요.")
       }
 
-      // 백엔드 API 호출로 상호작용 확인 - POST 요청으로 변경
       const response = await fetch(`http://13.209.5.228:8000/medications/check-interaction`, {
         method: "POST",
         headers: {
           accept: "application/json",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`, // 인증 토큰 추가
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           new_medication_id: interactionMedication.item_seq,
@@ -104,30 +91,73 @@ function InteractionCheck() {
         throw new Error("상호작용 확인 중 오류가 발생했습니다.")
       }
 
-      // JSON 응답 처리
       const data = await response.json()
-      console.log("API 응답 데이터:", data)
+      console.log("API 응답:", data)
 
-      // 응답 구조에 맞게 UI 데이터 구성
-      const hasWarning = data.interactions.some((interaction) => interaction.interaction_type === "주의")
+      // 대체 약품 데이터 찾기 - 여러 가능한 필드명 확인
+      let alternatives = []
+      const possibleFields = ["alternative_ingredients", "alternatives", "recommended_drugs", "alternative_drugs"]
+
+      for (const field of possibleFields) {
+        if (data[field] && Array.isArray(data[field]) && data[field].length > 0) {
+          console.log(`대체 약품을 ${field} 필드에서 발견:`, data[field])
+          alternatives = data[field]
+          break
+        }
+      }
+
+      // 상호작용 데이터 처리
+      const interactions = data.interactions || []
+      const hasHighRiskInteraction = interactions.some((interaction) => {
+        return ["병용금기", "중복성분", "주의"].includes(interaction.interaction_type)
+      })
+
+      const highestRiskLevel = interactions.reduce((highest, interaction) => {
+        const currentInfo = getInteractionLevelInfo(interaction.interaction_type)
+        const highestInfo = getInteractionLevelInfo(highest)
+        return currentInfo.priority > highestInfo.priority ? interaction.interaction_type : highest
+      }, "안전")
+
+      const highestRiskInfo = getInteractionLevelInfo(highestRiskLevel)
+
+      const processedInteractions = interactions.map((interaction) => {
+        const levelInfo = getInteractionLevelInfo(interaction.interaction_type || "안전")
+        return {
+          medication1: interactionMedication.item_name,
+          medication2: interaction.product_a,
+          level: interaction.interaction_type,
+          severity: levelInfo.severity,
+          description: interaction.detail,
+          recommendation: levelInfo.message,
+          color: levelInfo.color,
+          bgColor: levelInfo.bgColor,
+          icon: levelInfo.icon,
+        }
+      })
+
+      const processedAlternatives = alternatives.map((alt) => ({
+        item_seq: alt.item_seq,
+        item_name: alt.item_name,
+        manufacturer: alt.manufacturer,
+        ingredient: alt.ingredient,
+        entp_name: alt.manufacturer,
+      }))
+
+      console.log("처리된 대체 약품:", processedAlternatives)
 
       setInteractionResults({
         summary: {
-          hasWarning,
-          message: hasWarning
-            ? `${interactionMedication.item_name}과(와) 현재 복용 중인 약품 사이에 잠재적인 상호작용이 있습니다.`
+          hasWarning: hasHighRiskInteraction,
+          level: highestRiskLevel,
+          message: hasHighRiskInteraction
+            ? `${interactionMedication.item_name}과(와) 현재 복용 중인 약품 사이에 ${highestRiskLevel} 수준의 상호작용이 있습니다.`
             : "모든 약품이 안전하게 함께 복용 가능합니다.",
+          color: highestRiskInfo.color,
+          bgColor: highestRiskInfo.bgColor,
+          icon: highestRiskInfo.icon,
         },
-        interactions: data.interactions.map((interaction) => ({
-          medication1: interactionMedication.item_name,
-          medication2: interaction.product_a,
-          manufacturer: interaction.manufacturer_a,
-          level: interaction.interaction_type === "주의" ? "warning" : "safe",
-          description: interaction.detail,
-          recommendation:
-            interaction.interaction_type === "주의" ? "의사나 약사와 상담하세요." : "일반적인 용법용량을 따르세요.",
-        })),
-        alternatives: data.alternative_drugs || [],
+        interactions: processedInteractions,
+        alternatives: processedAlternatives,
       })
     } catch (error) {
       console.error("상호작용 확인 실패:", error)
@@ -140,27 +170,20 @@ function InteractionCheck() {
 
   // 대체 약품 추가 처리
   const handleAddAlternative = (alternative) => {
-    // 이미 추가된 약품인지 확인
     if (medications.some((med) => med.item_seq === alternative.item_seq)) {
+      alert("이미 추가된 약품입니다.")
       return
     }
 
-    // 약품 객체 구성
     const medicationToAdd = {
       item_seq: alternative.item_seq,
       item_name: alternative.item_name,
       entp_name: alternative.manufacturer,
-      // 필요한 경우 추가 필드 설정
+      ingredient: alternative.ingredient,
     }
 
-    // 약품 추가
     addMedication(medicationToAdd)
   }
-
-  // 디버깅용 로그
-  console.log("Search keyword:", searchKeyword)
-  console.log("Search results:", searchResults)
-  console.log("Show search results:", showSearchResults)
 
   return (
     <div className="dashboard-layout">
@@ -215,7 +238,6 @@ function InteractionCheck() {
                     />
                     {isSearching && <span className="search-spinner"></span>}
 
-                    {/* 검색 결과 드롭다운 */}
                     {showSearchResults && searchResults.length > 0 && (
                       <div className="search-results" ref={searchResultsRef}>
                         <ul>
@@ -238,7 +260,6 @@ function InteractionCheck() {
                     )}
                   </div>
 
-                  {/* 선택된 확인 약품 표시 */}
                   {interactionMedication && (
                     <div className="selected-check-medication">
                       <div className="medication-tag">
@@ -272,73 +293,88 @@ function InteractionCheck() {
                 <h3>상호작용 결과</h3>
               </div>
               <div className="card-body">
-                <div className="interaction-summary">
-                  <div className={`interaction-icon ${interactionResults.summary.hasWarning ? "warning" : "safe"}`}>
-                    <i
-                      className={`fas ${interactionResults.summary.hasWarning ? "fa-exclamation-triangle" : "fa-check-circle"}`}
-                    ></i>
+                <div className="interaction-summary" style={{ backgroundColor: interactionResults.summary.bgColor }}>
+                  <div className="interaction-icon" style={{ color: interactionResults.summary.color }}>
+                    <i className={`fas ${interactionResults.summary.icon}`}></i>
                   </div>
                   <div className="interaction-text">
-                    <h4>{interactionResults.summary.hasWarning ? "주의 필요" : "안전"}</h4>
+                    <h4 style={{ color: interactionResults.summary.color }}>{interactionResults.summary.level}</h4>
                     <p>{interactionResults.summary.message}</p>
                   </div>
                 </div>
 
-                <div className="interaction-details">
-                  <h4>상세 정보</h4>
-                  {interactionResults.interactions.map((interaction, index) => (
-                    <div className="interaction-item" key={index}>
-                      <div className="interaction-header">
-                        <h5>
-                          {interaction.medication1} + {interaction.medication2}
-                        </h5>
-                        <span className={`interaction-level ${interaction.level}`}>
-                          {interaction.level === "warning" ? "주의" : "안전"}
-                        </span>
-                      </div>
-                      <div className="interaction-content">
-                        {interaction.manufacturer && (
-                          <p className="manufacturer">
-                            <strong>제조사:</strong> {interaction.manufacturer}
+                {interactionResults.interactions.length > 0 && (
+                  <div className="interaction-details">
+                    <h4>상세 정보</h4>
+                    {interactionResults.interactions.map((interaction, index) => (
+                      <div className="interaction-item" key={index}>
+                        <div className="interaction-header">
+                          <h5>
+                            {interaction.medication1} + {interaction.medication2}
+                          </h5>
+                          <span
+                            className={`interaction-level ${interaction.severity}`}
+                            style={{
+                              backgroundColor: interaction.bgColor,
+                              color: interaction.color,
+                            }}
+                          >
+                            {interaction.level}
+                          </span>
+                        </div>
+                        <div className="interaction-content">
+                          <p>{interaction.description}</p>
+                          <p>
+                            <strong>권장사항:</strong> {interaction.recommendation}
                           </p>
-                        )}
-                        <p>{interaction.description}</p>
-                        <p>
-                          <strong>권장사항:</strong> {interaction.recommendation}
-                        </p>
+                        </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </div>
+                )}
 
-                {interactionResults.alternatives.length > 0 && (
+                {interactionResults.alternatives && interactionResults.alternatives.length > 0 && (
                   <div className="alternative-medications">
                     <h4>대체 약품 추천</h4>
-                    <p>더 안전한 대안입니다:</p>
+                    <p>더 안전한 대안 약품입니다:</p>
                     <div className="alternative-list">
-                      {interactionResults.alternatives.map((alternative, index) => (
-                        <div className="alternative-item" key={index}>
-                          <div className="alternative-info">
-                            <h5>{alternative.item_name}</h5>
-                            <p>
-                              <strong>제조사:</strong> {alternative.manufacturer}
-                            </p>
-                            <p>
-                              <strong>주요 성분:</strong> {alternative.ingredient}
-                            </p>
+                      {interactionResults.alternatives.map((alternative, index) => {
+                        const isAlreadyAdded = medications.some((med) => med.item_seq === alternative.item_seq)
+
+                        return (
+                          <div className="alternative-item" key={`${alternative.item_seq}-${index}`}>
+                            <div className="alternative-info">
+                              <h5>{alternative.item_name}</h5>
+                              <p>
+                                <strong>성분명:</strong> {alternative.ingredient}
+                              </p>
+                              <p>
+                                <strong>제조사:</strong> {alternative.manufacturer}
+                              </p>
+                              <p className="medication-code">
+                                <strong>약품코드:</strong> {alternative.item_seq}
+                              </p>
+                            </div>
+                            <div className="alternative-actions">
+                              <button
+                                className={`btn ${isAlreadyAdded ? "disabled-btn" : "add-btn"}`}
+                                onClick={() => handleAddAlternative(alternative)}
+                                disabled={isAlreadyAdded}
+                              >
+                                {isAlreadyAdded ? "이미 추가됨" : "복용약에 추가"}
+                              </button>
+                            </div>
                           </div>
-                          <button
-                            className="btn primary-btn add-btn"
-                            onClick={() => handleAddAlternative(alternative)}
-                            disabled={medications.some((med) => med.item_seq === alternative.item_seq)}
-                          >
-                            {medications.some((med) => med.item_seq === alternative.item_seq)
-                              ? "추가됨"
-                              : "내 복용약에 추가"}
-                          </button>
-                        </div>
-                      ))}
+                        )
+                      })}
                     </div>
+                  </div>
+                )}
+
+                {interactionResults.alternatives && interactionResults.alternatives.length === 0 && (
+                  <div className="no-alternatives">
+                    <h4>대체 약품</h4>
+                    <p>현재 추천할 수 있는 대체 약품이 없습니다.</p>
                   </div>
                 )}
               </div>
